@@ -3,184 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>朋友聚會夾期日曆 - 柔和版</title>
+    <title>朋友聚會夾期日曆 - 雲端連線版</title>
     <style>
         /* 柔和簡潔主題設計 */
-        body {
-            font-family: 'PingFang HK', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            background-color: #f4f7f6; /* 淺灰背景 */
-            color: #333333;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-        }
-        .container {
-            width: 100%;
-            max-width: 900px;
-            background: #ffffff; /* 純白容器 */
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
-        }
-        h1, h2 {
-            text-align: center;
-            color: #4a5568;
-            margin-bottom: 20px;
-            font-weight: 600;
-        }
+        body { font-family: 'PingFang HK', 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f4f7f6; color: #333333; margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 900px; background: #ffffff; padding: 30px; border-radius: 16px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05); }
+        h1, h2 { text-align: center; color: #4a5568; margin-bottom: 20px; font-weight: 600; }
         .screen { display: none; }
         .active-screen { display: block; }
-        
-        button {
-            background-color: #667eea; /* 柔和藍紫 */
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            font-size: 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 6px rgba(102, 126, 234, 0.2);
-        }
-        button:hover {
-            background-color: #5a67d8;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(102, 126, 234, 0.3);
-        }
+        button { background-color: #667eea; color: white; border: none; padding: 12px 24px; font-size: 16px; border-radius: 8px; cursor: pointer; font-weight: 500; transition: all 0.2s ease; box-shadow: 0 4px 6px rgba(102, 126, 234, 0.2); }
+        button:hover { background-color: #5a67d8; transform: translateY(-2px); box-shadow: 0 6px 12px rgba(102, 126, 234, 0.3); }
         .btn-center { display: block; margin: 20px auto; }
-        .btn-outline {
-            background-color: transparent;
-            color: #718096;
-            border: 1px solid #cbd5e0;
-            box-shadow: none;
-        }
-        .btn-outline:hover {
-            background-color: #f7fafc;
-            color: #4a5568;
-            transform: none;
-            box-shadow: none;
-        }
-        
-        input[type="text"] {
-            width: 80%;
-            max-width: 300px;
-            padding: 14px;
-            margin: 15px auto;
-            display: block;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
-            background: #f8fafc;
-            color: #2d3748;
-            font-size: 18px;
-            text-align: center;
-            transition: border-color 0.2s;
-        }
-        input[type="text"]:focus {
-            outline: none;
-            border-color: #667eea;
-            background: #ffffff;
-        }
-
-        /* 動態日曆設計 */
-        .calendar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #f8fafc;
-            padding: 15px 20px;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-            margin-bottom: 20px;
-        }
+        .btn-outline { background-color: transparent; color: #718096; border: 1px solid #cbd5e0; box-shadow: none; }
+        .btn-outline:hover { background-color: #f7fafc; color: #4a5568; transform: none; box-shadow: none; }
+        input[type="text"] { width: 80%; max-width: 300px; padding: 14px; margin: 15px auto; display: block; border-radius: 8px; border: 1px solid #e2e8f0; background: #f8fafc; color: #2d3748; font-size: 18px; text-align: center; transition: border-color 0.2s; }
+        input[type="text"]:focus { outline: none; border-color: #667eea; background: #ffffff; }
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 15px 20px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 20px; }
         .calendar-header h3 { margin: 0; color: #2d3748; font-size: 20px; }
-        .calendar-header button { padding: 8px 16px; font-size: 14px; }
-        
-        .weekdays {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            text-align: center;
-            font-weight: 600;
-            color: #a0aec0;
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 12px;
-        }
-        .day-card {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 15px 5px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            user-select: none;
-            min-height: 55px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
+        .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: 600; color: #a0aec0; margin-bottom: 10px; font-size: 14px; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; }
+        .day-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 15px 5px; text-align: center; cursor: pointer; transition: all 0.2s ease; user-select: none; min-height: 55px; display: flex; flex-direction: column; justify-content: center; }
         .day-card:hover { transform: translateY(-3px); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .empty-slot { background: transparent; border: none; cursor: default; }
         .empty-slot:hover { transform: none; box-shadow: none; }
-        
-        /* 柔和的狀態顏色 */
         .status-none { border-bottom: 4px solid #e2e8f0; color: #4a5568; }
-        .status-ok {
-            background: #f0fdf4; /* 淺湖水綠 */
-            border: 1px solid #bbf7d0;
-            border-bottom: 4px solid #4ade80;
-            color: #166534;
-        }
-        .status-no {
-            background: #fef2f2; /* 淺粉紅 */
-            border: 1px solid #fecaca;
-            border-bottom: 4px solid #f87171;
-            color: #991b1b;
-        }
-
-        /* 結果列表 */
-        .result-item {
-            background: #f8fafc;
-            padding: 18px;
-            margin-bottom: 15px;
-            border-radius: 12px;
-            border-left: 6px solid #667eea;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-        }
+        .status-ok { background: #f0fdf4; border: 1px solid #bbf7d0; border-bottom: 4px solid #4ade80; color: #166534; }
+        .status-no { background: #fef2f2; border: 1px solid #fecaca; border-bottom: 4px solid #f87171; color: #991b1b; }
+        .result-item { background: #f8fafc; padding: 18px; margin-bottom: 15px; border-radius: 12px; border-left: 6px solid #667eea; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         .result-details { flex: 1; }
         .result-details p { margin: 5px 0 0 0; font-size: 14px; }
-        
-        .progress-bar {
-            height: 12px;
-            background: #e2e8f0;
-            border-radius: 6px;
-            width: 120px;
-            overflow: hidden;
-            margin-left: 20px;
-        }
-        .progress-fill {
-            height: 100%;
-            background: #4ade80; /* 綠色進度條 */
-            width: 0%;
-            transition: width 0.5s ease-out;
-        }
-        
+        .progress-bar { height: 12px; background: #e2e8f0; border-radius: 6px; width: 120px; overflow: hidden; margin-left: 20px; }
+        .progress-fill { height: 100%; background: #4ade80; width: 0%; transition: width 0.5s ease-out; }
         .text-ok { color: #166534; font-weight: 500; }
         .text-no { color: #e53e3e; font-weight: 500; }
+        #loading-msg { text-align: center; color: #667eea; font-weight: bold; margin-bottom: 15px; display: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <div id="loading-msg">🔄 正在同步雲端資料...</div>
+
     <div id="screen-login" class="screen active-screen">
         <h1>👋 歡迎來到聚會夾期日曆</h1>
         <p style="text-align: center; color: #718096; margin-bottom: 30px;">請輸入你嘅名字開始選擇時間</p>
@@ -194,40 +57,80 @@
             你好，<span id="display-name" style="color:#667eea; font-weight:bold; font-size: 18px;"></span>！<br>
             <small>請點擊日子切換狀態（✅ 得閒 / ❌ 唔得閒）</small>
         </p>
-        
         <div class="calendar-header">
             <button class="btn-outline" onclick="changeMonth(-1)">◀ 上個月</button>
             <h3 id="month-display"></h3>
             <button class="btn-outline" onclick="changeMonth(1)">下個月 ▶</button>
         </div>
-
         <div class="weekdays">
             <div>日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div>
         </div>
-        <div class="calendar-grid" id="calendar-container">
-            </div>
-
+        <div class="calendar-grid" id="calendar-container"></div>
         <button class="btn-center" onclick="saveAndGoToResults()" style="margin-top: 30px; padding: 15px 30px; font-size: 18px;">💾 儲存並查看全體結果</button>
     </div>
 
     <div id="screen-results" class="screen">
         <h2>📊 聚會檔期總覽</h2>
-        <p style="text-align: center; color: #718096; margin-bottom: 25px;">系統已為你整合所有人嘅檔期選擇：</p>
-        <div id="results-container">
-            </div>
+        <p style="text-align: center; color: #718096; margin-bottom: 25px;">即時整合所有人嘅檔期選擇：</p>
+        <div id="results-container"></div>
         <button class="btn-center btn-outline" onclick="restartApp()">登出 / 換人輸入</button>
     </div>
 </div>
 
-<script>
-    let currentUser = "";
-    // 資料庫結構：{ "Tony": { "2026-3-15": "ok", "2026-3-16": "no" }, "Peter": {...} }
-    let allData = JSON.parse(localStorage.getItem('gentlePartyData')) || {}; 
-    
-    // 日曆變數
-    let currentYear = new Date().getFullYear();
-    let currentMonth = new Date().getMonth(); // 0-11
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
+    // 專屬 Firebase 設定
+    const firebaseConfig = {
+        apiKey: "AIzaSyAVkPz2TbUWQ6B7QcgoluN7NRE-j0MGUTs",
+        authDomain: "calender-f15bb.firebaseapp.com",
+        databaseURL: "https://calender-f15bb-default-rtdb.firebaseio.com", // 幫你手動補上
+        projectId: "calender-f15bb",
+        storageBucket: "calender-f15bb.firebasestorage.app",
+        messagingSenderId: "999399213275",
+        appId: "1:999399213275:web:bf7931c34ef39a356a64fe",
+        measurementId: "G-PHD0YWV0CQ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const dbRef = ref(db, 'partyData'); 
+
+    window.currentUser = "";
+    window.allData = {}; 
+    window.currentYear = new Date().getFullYear();
+    window.currentMonth = new Date().getMonth();
+
+    // 實時監聽資料庫變化
+    onValue(dbRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            window.allData = data;
+        }
+        if (document.getElementById('screen-results').classList.contains('active-screen')) {
+            window.renderResults();
+        }
+    });
+
+    // 儲存資料上雲端
+    window.saveToFirebase = function() {
+        document.getElementById('loading-msg').style.display = 'block';
+        
+        set(ref(db, 'partyData/' + window.currentUser), window.allData[window.currentUser])
+            .then(() => {
+                document.getElementById('loading-msg').style.display = 'none';
+                window.renderResults();
+                window.showScreen('screen-results');
+            })
+            .catch((error) => {
+                document.getElementById('loading-msg').style.display = 'none';
+                alert("儲存失敗，請檢查 Firebase Database 規則是否設為 true！\n錯誤訊息：" + error);
+            });
+    }
+</script>
+
+<script>
     function showScreen(screenId) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
         document.getElementById(screenId).classList.add('active-screen');
@@ -235,16 +138,13 @@
 
     function goToCalendar() {
         const nameInput = document.getElementById('username').value.trim();
-        if (!nameInput) {
-            alert('請先輸入你個名啊！');
-            return;
-        }
-        currentUser = nameInput;
-        document.getElementById('display-name').innerText = currentUser;
+        if (!nameInput) { alert('請先輸入你個名啊！'); return; }
         
-        // 確保呢位用戶有資料夾
-        if (!allData[currentUser]) {
-            allData[currentUser] = {};
+        window.currentUser = nameInput;
+        document.getElementById('display-name').innerText = window.currentUser;
+        
+        if (!window.allData[window.currentUser]) {
+            window.allData[window.currentUser] = {};
         }
         
         renderCalendar();
@@ -252,55 +152,41 @@
     }
 
     function changeMonth(step) {
-        currentMonth += step;
-        if (currentMonth < 0) {
-            currentMonth = 11;
-            currentYear--;
-        } else if (currentMonth > 11) {
-            currentMonth = 0;
-            currentYear++;
-        }
+        window.currentMonth += step;
+        if (window.currentMonth < 0) { window.currentMonth = 11; window.currentYear--; } 
+        else if (window.currentMonth > 11) { window.currentMonth = 0; window.currentYear++; }
         renderCalendar();
     }
 
     function renderCalendar() {
         const container = document.getElementById('calendar-container');
         container.innerHTML = ''; 
-        
-        document.getElementById('month-display').innerText = `${currentYear}年 ${currentMonth + 1}月`;
+        document.getElementById('month-display').innerText = `${window.currentYear}年 ${window.currentMonth + 1}月`;
 
-        // 計算呢個月第一日係星期幾，同埋呢個月有幾多日
-        const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-        const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+        const firstDay = new Date(window.currentYear, window.currentMonth, 1).getDay();
+        const daysInMonth = new Date(window.currentYear, window.currentMonth + 1, 0).getDate();
 
-        // 加入月頭嘅空白格
         for (let i = 0; i < firstDay; i++) {
             const emptyDiv = document.createElement('div');
             emptyDiv.className = 'day-card empty-slot';
             container.appendChild(emptyDiv);
         }
 
-        // 加入真正嘅日子
         for (let day = 1; day <= daysInMonth; day++) {
-            const dateStr = `${currentYear}-${currentMonth + 1}-${day}`; 
-            
+            const dateStr = `${window.currentYear}-${window.currentMonth + 1}-${day}`; 
             const card = document.createElement('div');
-            card.className = 'day-card status-none';
             
-            // 讀取呢位用戶之前有冇揀過呢日
-            let status = allData[currentUser][dateStr] || 'none';
+            let status = window.allData[window.currentUser][dateStr] || 'none';
             updateCardStyle(card, day, status);
 
-            // 點擊事件
             card.onclick = () => {
                 if (status === 'none') status = 'ok';
                 else if (status === 'ok') status = 'no';
                 else status = 'none';
                 
-                allData[currentUser][dateStr] = status; 
+                window.allData[window.currentUser][dateStr] = status; 
                 updateCardStyle(card, day, status);
             };
-
             container.appendChild(card);
         }
     }
@@ -320,28 +206,25 @@
     }
 
     function saveAndGoToResults() {
-        localStorage.setItem('gentlePartyData', JSON.stringify(allData));
-        renderResults();
-        showScreen('screen-results');
+        if (typeof window.saveToFirebase === 'function') {
+            window.saveToFirebase();
+        } else {
+            alert("Firebase 未準備好！");
+        }
     }
 
-    function renderResults() {
+    window.renderResults = function() {
         const container = document.getElementById('results-container');
         container.innerHTML = '';
 
-        const totalUsers = Object.keys(allData).length;
+        const totalUsers = Object.keys(window.allData).length;
         if (totalUsers === 0) return;
 
-        // 統計有回應嘅日子
         let dateCounts = {};
-
-        for (const [user, selections] of Object.entries(allData)) {
+        for (const [user, selections] of Object.entries(window.allData)) {
             for (const [dateStr, status] of Object.entries(selections)) {
-                // 只計算有人填咗「ok」或「no」嘅日子
                 if (status === 'ok' || status === 'no') {
-                    if (!dateCounts[dateStr]) {
-                        dateCounts[dateStr] = { ok: 0, no: 0, okNames: [], noNames: [] };
-                    }
+                    if (!dateCounts[dateStr]) { dateCounts[dateStr] = { ok: 0, no: 0, okNames: [], noNames: [] }; }
                     if (status === 'ok') {
                         dateCounts[dateStr].ok++;
                         dateCounts[dateStr].okNames.push(user);
@@ -353,14 +236,10 @@
             }
         }
 
-        // 過濾並排序（按最多人得閒排序）
-        let sortedDates = Object.keys(dateCounts)
-            .sort((a, b) => {
-                if (dateCounts[b].ok !== dateCounts[a].ok) {
-                    return dateCounts[b].ok - dateCounts[a].ok;
-                }
-                return new Date(a) - new Date(b);
-            });
+        let sortedDates = Object.keys(dateCounts).sort((a, b) => {
+            if (dateCounts[b].ok !== dateCounts[a].ok) return dateCounts[b].ok - dateCounts[a].ok;
+            return new Date(a) - new Date(b);
+        });
 
         if (sortedDates.length === 0) {
             container.innerHTML = '<p style="text-align:center; color:#718096; background: #fff; padding: 20px; border-radius: 8px;">暫時未有任何人輸入檔期 📝</p>';
@@ -370,30 +249,19 @@
         sortedDates.forEach(dateStr => {
             const data = dateCounts[dateStr];
             const percentage = (data.ok / totalUsers) * 100;
-            
-            // 準備名單字眼
             const okNamesText = data.okNames.length > 0 ? data.okNames.join(', ') : '無';
             const noNamesText = data.noNames.length > 0 ? data.noNames.join(', ') : '無';
-
             const d = new Date(dateStr);
             const displayDate = `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
 
             const item = document.createElement('div');
             item.className = 'result-item';
-            
-            // 根據是否最多人得閒，改變左邊邊框顏色
-            if (data.ok === totalUsers && totalUsers > 0) {
-                item.style.borderLeftColor = '#4ade80'; // 全員到齊轉綠色
-            } else if (data.ok === 0) {
-                item.style.borderLeftColor = '#f87171'; // 無人得閒轉紅色
-            }
+            if (data.ok === totalUsers && totalUsers > 0) item.style.borderLeftColor = '#4ade80';
+            else if (data.ok === 0) item.style.borderLeftColor = '#f87171';
 
             item.innerHTML = `
                 <div class="result-details">
-                    <h3 style="margin:0 0 8px 0; color:#2d3748;">
-                        ${displayDate} 
-                        <span style="font-size:14px; color:#718096; font-weight:normal;">(共 ${totalUsers} 人參與)</span>
-                    </h3>
+                    <h3 style="margin:0 0 8px 0; color:#2d3748;">${displayDate} <span style="font-size:14px; color:#718096; font-weight:normal;">(共 ${totalUsers} 人參與)</span></h3>
                     <p class="text-ok">✅ 得閒 (${data.ok}人)：${okNamesText}</p>
                     <p class="text-no">❌ 唔得閒 (${data.no}人)：${noNamesText}</p>
                 </div>
@@ -408,8 +276,8 @@
     function restartApp() {
         document.getElementById('username').value = '';
         showScreen('screen-login');
-        currentYear = new Date().getFullYear();
-        currentMonth = new Date().getMonth();
+        window.currentYear = new Date().getFullYear();
+        window.currentMonth = new Date().getMonth();
     }
 </script>
 
