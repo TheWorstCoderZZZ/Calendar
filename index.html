@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>朋友聚會夾期日曆 - 雲端連線版</title>
+    <title>朋友聚會夾期日曆</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#f4f7f6">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    
     <style>
         /* 柔和簡潔主題設計 */
         body { font-family: 'PingFang HK', 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f4f7f6; color: #333333; margin: 0; padding: 20px; display: flex; justify-content: center; }
@@ -77,15 +82,24 @@
     </div>
 </div>
 
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log('Service Worker 註冊成功！', reg))
+                .catch(err => console.log('Service Worker 註冊失敗', err));
+        });
+    }
+</script>
+
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-    // 專屬 Firebase 設定
     const firebaseConfig = {
         apiKey: "AIzaSyAVkPz2TbUWQ6B7QcgoluN7NRE-j0MGUTs",
         authDomain: "calender-f15bb.firebaseapp.com",
-        databaseURL: "https://calender-f15bb-default-rtdb.asia-southeast1.firebasedatabase.app", // 幫你手動補上
+        databaseURL: "https://calender-f15bb-default-rtdb.firebaseio.com", 
         projectId: "calender-f15bb",
         storageBucket: "calender-f15bb.firebasestorage.app",
         messagingSenderId: "999399213275",
@@ -102,21 +116,16 @@
     window.currentYear = new Date().getFullYear();
     window.currentMonth = new Date().getMonth();
 
-    // 實時監聽資料庫變化
     onValue(dbRef, (snapshot) => {
         const data = snapshot.val();
-        if (data) {
-            window.allData = data;
-        }
+        if (data) { window.allData = data; }
         if (document.getElementById('screen-results').classList.contains('active-screen')) {
             window.renderResults();
         }
     });
 
-    // 儲存資料上雲端
     window.saveToFirebase = function() {
         document.getElementById('loading-msg').style.display = 'block';
-        
         set(ref(db, 'partyData/' + window.currentUser), window.allData[window.currentUser])
             .then(() => {
                 document.getElementById('loading-msg').style.display = 'none';
@@ -125,7 +134,7 @@
             })
             .catch((error) => {
                 document.getElementById('loading-msg').style.display = 'none';
-                alert("儲存失敗，請檢查 Firebase Database 規則是否設為 true！\n錯誤訊息：" + error);
+                alert("儲存失敗，請檢查設定！錯誤訊息：" + error);
             });
     }
 </script>
@@ -139,14 +148,9 @@
     function goToCalendar() {
         const nameInput = document.getElementById('username').value.trim();
         if (!nameInput) { alert('請先輸入你個名啊！'); return; }
-        
         window.currentUser = nameInput;
         document.getElementById('display-name').innerText = window.currentUser;
-        
-        if (!window.allData[window.currentUser]) {
-            window.allData[window.currentUser] = {};
-        }
-        
+        if (!window.allData[window.currentUser]) { window.allData[window.currentUser] = {}; }
         renderCalendar();
         showScreen('screen-calendar');
     }
@@ -162,7 +166,6 @@
         const container = document.getElementById('calendar-container');
         container.innerHTML = ''; 
         document.getElementById('month-display').innerText = `${window.currentYear}年 ${window.currentMonth + 1}月`;
-
         const firstDay = new Date(window.currentYear, window.currentMonth, 1).getDay();
         const daysInMonth = new Date(window.currentYear, window.currentMonth + 1, 0).getDate();
 
@@ -175,7 +178,6 @@
         for (let day = 1; day <= daysInMonth; day++) {
             const dateStr = `${window.currentYear}-${window.currentMonth + 1}-${day}`; 
             const card = document.createElement('div');
-            
             let status = window.allData[window.currentUser][dateStr] || 'none';
             updateCardStyle(card, day, status);
 
@@ -183,7 +185,6 @@
                 if (status === 'none') status = 'ok';
                 else if (status === 'ok') status = 'no';
                 else status = 'none';
-                
                 window.allData[window.currentUser][dateStr] = status; 
                 updateCardStyle(card, day, status);
             };
@@ -206,17 +207,13 @@
     }
 
     function saveAndGoToResults() {
-        if (typeof window.saveToFirebase === 'function') {
-            window.saveToFirebase();
-        } else {
-            alert("Firebase 未準備好！");
-        }
+        if (typeof window.saveToFirebase === 'function') { window.saveToFirebase(); } 
+        else { alert("Firebase 未準備好！"); }
     }
 
     window.renderResults = function() {
         const container = document.getElementById('results-container');
         container.innerHTML = '';
-
         const totalUsers = Object.keys(window.allData).length;
         if (totalUsers === 0) return;
 
@@ -225,13 +222,8 @@
             for (const [dateStr, status] of Object.entries(selections)) {
                 if (status === 'ok' || status === 'no') {
                     if (!dateCounts[dateStr]) { dateCounts[dateStr] = { ok: 0, no: 0, okNames: [], noNames: [] }; }
-                    if (status === 'ok') {
-                        dateCounts[dateStr].ok++;
-                        dateCounts[dateStr].okNames.push(user);
-                    } else if (status === 'no') {
-                        dateCounts[dateStr].no++;
-                        dateCounts[dateStr].noNames.push(user);
-                    }
+                    if (status === 'ok') { dateCounts[dateStr].ok++; dateCounts[dateStr].okNames.push(user); } 
+                    else if (status === 'no') { dateCounts[dateStr].no++; dateCounts[dateStr].noNames.push(user); }
                 }
             }
         }
@@ -283,4 +275,3 @@
 
 </body>
 </html>
-
